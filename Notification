@@ -1,0 +1,50 @@
+# OTP Alert :
+notification = {}
+def send_otp_alert(customer_id, otp):
+    message = f"Your OTP is {otp}. Valid for 5 minutes."
+    store_notification(customer_id, "OTP", message)
+    print(f"[OTP ALERT] {message}")
+
+ # Transaction Alert :
+def send_transaction_alert(customer_id, txn_type, amount, balance):
+    message = f"Rs.{amount} {txn_type} on your account. Balance: Rs.{balance}"
+    store_notification(customer_id, "TRANSACTION", message)
+    print(f"[TXN ALERT] {message}")
+
+#  Fraud Alert :
+def send_fraud_alert(customer_id, reason):
+    message = f"ALERT: Suspicious activity detected! Reason: {reason}"
+    store_notification(customer_id, "FRAUD", message)
+    print(f"[FRAUD ALERT] {message}")
+
+# Storage Function : 
+from datetime import datetime
+
+def store_notification(customer_id, alert_type, message):
+    if customer_id not in notification:
+        notification[customer_id] = []
+    
+    notification[customer_id].append({
+        "type": alert_type,
+        "message": message,
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+
+
+ # View Function : 
+def view_notification(customer_id):
+    if customer_id not in notification:
+        print("Not received any notification :)  ." )
+        return
+    
+    print(f"\n--- Notification for {customer_id} ---")
+    for n in notification[customer_id]:
+        print(f"[{n['time']}] [{n['type']}] {n['message']}")
+
+# Test ( this is  only for internal team ) 
+if __name__ == "__main__":
+    send_otp_alert("C001", 4521)
+    send_transaction_alert("C001", "Debited", 5000, 12000)
+    send_fraud_alert("C001", "High value transaction")
+    view_notification("C001")
